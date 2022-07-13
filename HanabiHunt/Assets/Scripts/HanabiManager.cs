@@ -12,10 +12,13 @@ public class HanabiManager : MonoBehaviour
     public Transform[] GenPoints;
     public float TimeToSpawn;
     public GameObject[] Limits;
+    public int MaxNumberOfFireworks;
+    public int CurrentNumberOfFireworks;
 
     private void Start()
     {
         StartCoroutine(SpawnFireworks());
+        CurrentNumberOfFireworks = MaxNumberOfFireworks;
     }
 
     private void Update()
@@ -29,8 +32,11 @@ public class HanabiManager : MonoBehaviour
             yield return new WaitForSeconds(TimeToSpawn);
             int randomPosition = Random.Range(0, GenPoints.Length);
             int randomFirework = Random.Range(0, Fireworks.Length);
-            Instantiate(Fireworks[randomFirework], GenPoints[randomPosition].position, Quaternion.identity);
-            currentNumberOfFireworks++;
+            if (currentNumberOfFireworks < MaxNumberOfFireworks)
+            {
+                Instantiate(Fireworks[randomFirework], GenPoints[randomPosition].position, GenPoints[randomPosition].rotation = Quaternion.Euler(Random.Range(0, 0), Random.Range(0, 0), Random.Range(-90, 90)));
+                currentNumberOfFireworks++;
+            }
         }
     }
 
