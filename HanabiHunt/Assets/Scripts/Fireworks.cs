@@ -7,15 +7,24 @@ public class Fireworks : MonoBehaviour
     public int Speed;
     private float dirX = 0f;
     private float dirY = 0f;
-    public Rigidbody2D rb;
+    public Rigidbody2D rbFireworks;
     public Animator MyAnimator;
     public int Health;
     public Collider2D MyCollider;
     public float TimeToExit;
+    public int Lives;
+
+    [SerializeField]
+    private Vector3 initialVelocity;
+
+    [SerializeField]
+    private float minVelocity = 5f;
+
+    private Vector3 lastFrameVelocity;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rbFireworks = GetComponent<Rigidbody2D>();
         MyAnimator = GetComponent<Animator>();
     }
 
@@ -26,7 +35,8 @@ public class Fireworks : MonoBehaviour
 
     private void Update()
     {
-        transform.position += transform.up * Time.deltaTime * Speed;
+        lastFrameVelocity = rbFireworks.velocity;
+        StartCoroutine(ExitFirework());
     }
 
     private void OnMouseDown()
@@ -36,7 +46,9 @@ public class Fireworks : MonoBehaviour
             if (Health == 0)
             {
                 MyAnimator.SetTrigger("Shoot");
-                Speed = 0;
+                rbFireworks.velocity = new Vector2(0, 0);
+
+                Destroy(gameObject, 3);
             }
             else
             {
@@ -47,19 +59,20 @@ public class Fireworks : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag.Contains("Vertical"))
-        {
-            transform.rotation = Quaternion.Euler(Random.Range(0, 0), Random.Range(0, -45), Random.Range(0, 45));
-        }
-        if (collision.gameObject.tag.Contains("Horizontal"))
-        {
-            transform.rotation = Quaternion.Euler(-180, 0, 0);
-        }
-        if (collision.gameObject.tag.Contains("HorizontalDown"))
-        {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
+        Bounce(collision.contacts[0].normal);
+    }
 
+    private void OnEnable()
+    {
+        rbFireworks.velocity = initialVelocity;
+    }
+
+    private void Bounce(Vector3 collisionNormal)
+    {
+        var speed = lastFrameVelocity.magnitude;
+        var direction = Vector3.Reflect(lastFrameVelocity.normalized, collisionNormal);
+
+        rbFireworks.velocity = direction * Mathf.Max(speed, minVelocity);
         FlipCharacter();
     }
 
@@ -67,7 +80,8 @@ public class Fireworks : MonoBehaviour
     {
         yield return new WaitForSeconds(TimeToExit);
         MyCollider.enabled = false;
-        Destroy(gameObject, 8);
+        Lives -= 1;
+        Destroy(gameObject, 4);
     }
 
     public void FlipCharacter()
