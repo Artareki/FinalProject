@@ -19,13 +19,16 @@ public class LoadingBar : MonoBehaviour
         elapsedTime = 0;
     }
 
-    // Update is called once per frame
     private void Update()
     {
         if (elapsedTime < FillTime)
         {
             elapsedTime += Time.deltaTime;
             LoadingImage.fillAmount = Mathf.Lerp(1, 0, elapsedTime / FillTime);
+        }
+        if (LoadingImage.fillAmount == 0)
+        {
+            HanabiManager.Instance.GameOverScreen();
         }
     }
 }

@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Fireworks : MonoBehaviour
 {
-    public int Speed;
     private float dirX = 0f;
     private float dirY = 0f;
-    public Rigidbody2D rbFireworks;
-    public Animator MyAnimator;
-    public int Health;
-    public Collider2D MyCollider;
-    public float TimeToExit;
-    public int Lives;
+    [SerializeField] private Rigidbody2D rbFireworks;
+    [SerializeField] private Animator MyAnimator;
+    [SerializeField] private int Health;
+    [SerializeField] private Collider2D MyCollider;
+
+    [SerializeField] private float TimeToExit;
 
     [SerializeField]
     private Vector3 initialVelocity;
@@ -26,6 +25,7 @@ public class Fireworks : MonoBehaviour
     {
         rbFireworks = GetComponent<Rigidbody2D>();
         MyAnimator = GetComponent<Animator>();
+        StartCoroutine(ExitFirework());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -36,18 +36,19 @@ public class Fireworks : MonoBehaviour
     private void Update()
     {
         lastFrameVelocity = rbFireworks.velocity;
-        StartCoroutine(ExitFirework());
     }
 
     private void OnMouseDown()
     {
         if (Input.GetButtonDown("Fire1"))
         {
+            HanabiManager.Instance.Shots();
+
             if (Health == 0)
             {
                 MyAnimator.SetTrigger("Shoot");
                 rbFireworks.velocity = new Vector2(0, 0);
-
+                HanabiManager.Instance.AddScore();
                 Destroy(gameObject, 3);
             }
             else
@@ -80,8 +81,8 @@ public class Fireworks : MonoBehaviour
     {
         yield return new WaitForSeconds(TimeToExit);
         MyCollider.enabled = false;
-        Lives -= 1;
-        Destroy(gameObject, 4);
+        HanabiManager.Instance.Invoke("LivesLost", 1f);
+        Destroy(gameObject, 2);
     }
 
     public void FlipCharacter()

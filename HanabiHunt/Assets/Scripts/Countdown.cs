@@ -31,7 +31,7 @@ public class Countdown : MonoBehaviour
         {
             TimeRemaining = CountdownDuration;
             LoadingBar.FillTime = CountdownDuration;
-            LoadingBar.Restart();
+            //Game Over
         }
     }
 }
