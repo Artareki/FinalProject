@@ -59,8 +59,11 @@ public class HanabiManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            TotalShots++;
-            TotalShotsText.text = TotalShots.ToString("/0");
+            if (Time.timeScale == 1)
+            {
+                TotalShots++;
+                TotalShotsText.text = TotalShots.ToString("/0");
+            }
         }
     }
 
@@ -79,12 +82,13 @@ public class HanabiManager : MonoBehaviour
     public void GameOverScreen()
     {
         GameOver.SetActive(true);
+        Time.timeScale = 0;
         DestroyObjects();
         StopAllCoroutines();
         CheckHighScore();
         GameOverScore.text = TotalScore.ToString("000");
         GameOverHitShots.text = HitShots.ToString("0");
-        GameOverTotalShots.text = TotalShots.ToString("0");
+        GameOverTotalShots.text = TotalShots.ToString("/0");
         GameOverMaxScore.text = HighScoreText.text;
     }
 

@@ -43,12 +43,12 @@ public class Fireworks : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             HanabiManager.Instance.Shots();
+            HanabiManager.Instance.AddScore();
 
             if (Health == 0)
             {
                 MyAnimator.SetTrigger("Shoot");
                 rbFireworks.velocity = new Vector2(0, 0);
-                HanabiManager.Instance.AddScore();
                 Destroy(gameObject, 3);
             }
             else
