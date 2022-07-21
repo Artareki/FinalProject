@@ -49,10 +49,20 @@ public class HanabiManager : MonoBehaviour
         ScoreText.text = TotalScore.ToString("000");
     }
 
+    public void AddScoreRed()
+    {
+        TotalScore += 50;
+
+        ScoreText.text = TotalScore.ToString("000");
+    }
+
     public void Shots()
     {
-        HitShots++;
-        HitShotsText.text = HitShots.ToString("0");
+        if (Time.timeScale == 1)
+        {
+            HitShots++;
+            HitShotsText.text = HitShots.ToString("0");
+        }
     }
 
     private void OnMouseDown()
@@ -65,6 +75,11 @@ public class HanabiManager : MonoBehaviour
                 TotalShotsText.text = TotalShots.ToString("/0");
             }
         }
+    }
+
+    public void OnPause()
+    {
+        TotalShots--;
     }
 
     public IEnumerator SpawnFireworks()

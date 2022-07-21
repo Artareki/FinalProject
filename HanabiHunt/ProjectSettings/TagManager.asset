@@ -8,6 +8,8 @@ TagManager:
   - Horizontal
   - HorizontalDown
   - Firework
+  - UIPanel
+  - FireworkRed
   layers:
   - Default
   - TransparentFX

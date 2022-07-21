@@ -10,6 +10,9 @@ public class Fireworks : MonoBehaviour
     [SerializeField] private Animator MyAnimator;
     [SerializeField] private int Health;
     [SerializeField] private Collider2D MyCollider;
+    public AudioSource Boom;
+    public AudioSource Wow;
+    public AudioSource Boo;
 
     [SerializeField] private float TimeToExit;
 
@@ -40,16 +43,26 @@ public class Fireworks : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && Time.timeScale == 1)
         {
             HanabiManager.Instance.Shots();
-            HanabiManager.Instance.AddScore();
 
             if (Health == 0)
             {
                 MyAnimator.SetTrigger("Shoot");
                 rbFireworks.velocity = new Vector2(0, 0);
                 Destroy(gameObject, 3);
+                Boom.Play();
+                Wow.Play();
+
+                if (tag == "Firework")
+                {
+                    HanabiManager.Instance.AddScore();
+                }
+                else if (tag == "FireworkRed")
+                {
+                    HanabiManager.Instance.AddScoreRed();
+                }
             }
             else
             {
@@ -81,8 +94,9 @@ public class Fireworks : MonoBehaviour
     {
         yield return new WaitForSeconds(TimeToExit);
         MyCollider.enabled = false;
-        HanabiManager.Instance.Invoke("LivesLost", 1f);
         Destroy(gameObject, 2);
+        HanabiManager.Instance.Invoke("LivesLost", 1f);
+        Boo.Play();
     }
 
     public void FlipCharacter()
